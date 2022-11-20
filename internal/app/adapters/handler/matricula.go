@@ -24,20 +24,20 @@ func (h *MatriculaHandler) Configure(server *echo.Echo) {
 }
 
 func (h *MatriculaHandler) CreateMatricula(c echo.Context) error {
-	request := new(inbound.CreateMateriaRequest)
+	request := new(inbound.CreateMatriculaRequest)
 	if err := c.Bind(request); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, map[string]interface{}{
 			"error": err.Error(),
 		})
 	}
 
-	materia := mapper.MateriaFromCreateMateriaRequest(request)
-	err := h.services.Materia.Create(c.Request().Context(), materia)
+	matricula := mapper.MatriculaFromCreateMatriculaRequest(request)
+	err := h.services.Matricula.Create(c.Request().Context(), matricula)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
 	}
 
-	return c.JSON(http.StatusCreated, presenter.CreateMateria(materia))
+	return c.JSON(http.StatusCreated, presenter.CreateMatricula(matricula))
 }

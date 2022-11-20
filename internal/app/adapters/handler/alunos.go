@@ -23,6 +23,7 @@ func NewAlunoHandler(services *domain.Services) *AlunoHandler {
 func (h *AlunoHandler) Configure(server *echo.Echo) {
 	server.POST("/v1/aluno", h.CreateAluno)
 	server.GET("/v1/aluno/:id", h.ReadAlunoById)
+	server.GET("/v1/aluno/:id/matricula", h.ReadAlunoAndMatriculaById)
 }
 
 func (h *AlunoHandler) CreateAluno(c echo.Context) error {
@@ -71,4 +72,26 @@ func (h *AlunoHandler) ReadAlunoById(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, presenter.CreateAluno(aluno))
+}
+
+func (h *AlunoHandler) ReadAlunoAndMatriculaById(c echo.Context) error {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	aluno, matriculas, err := h.services.Aluno.ReadAndMatriculaById(c.Request().Context(), id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	if aluno == nil {
+		return echo.NewHTTPError(http.StatusNotFound)
+	}
+
+	return c.JSON(http.StatusOK, presenter.AlunoAndMatricula(aluno, matriculas))
 }

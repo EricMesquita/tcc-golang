@@ -7,18 +7,20 @@ import (
 )
 
 type Handlers struct {
-	aluno   *handler.AlunoHandler
-	book    *handler.BookHandler
-	health  *handler.HealthHandler
-	materia *handler.MateriaHandler
+	aluno     *handler.AlunoHandler
+	book      *handler.BookHandler
+	health    *handler.HealthHandler
+	materia   *handler.MateriaHandler
+	matricula *handler.MatriculaHandler
 }
 
 func NewHandlers(services *domain.Services) *Handlers {
 	return &Handlers{
-		aluno:   handler.NewAlunoHandler(services),
-		book:    handler.NewBookHandler(services),
-		health:  handler.NewHealthHandler(services),
-		materia: handler.NewMateriaHandler(services),
+		aluno:     handler.NewAlunoHandler(services),
+		book:      handler.NewBookHandler(services),
+		health:    handler.NewHealthHandler(services),
+		materia:   handler.NewMateriaHandler(services),
+		matricula: handler.NewMatriculaHandler(services),
 	}
 }
 
@@ -27,4 +29,5 @@ func (h *Handlers) Configure(server *echo.Echo) {
 	h.book.Configure(server)
 	h.health.Configure(server)
 	h.materia.Configure(server)
+	h.matricula.Configure(server)
 }
